@@ -38,8 +38,13 @@ namespace OrderSystem
         public static Order RandOrder()
         {
             var client = new Client(RandString(), rand.Next(0, 1234567).ToString());
-            var detail = new OrderDetail(RandString());
-            var order = new Order(client, detail, RandCommodity(), rand.Next(0, 100));
+            var details = new List<OrderDetail>();
+            var detailCnt = rand.Next(1, 5);
+            for (int i = 1; i <= detailCnt; i++)
+            {
+                details.Add(RandDetail());
+            }
+            var order = new Order(client, details);
             return order;
         }
 
@@ -54,10 +59,33 @@ namespace OrderSystem
             return s.ToString();
         }
 
+        /// <summary>
+        /// 生成随机 decimal，[a, b)
+        /// </summary>
+        private static decimal RandDecimal(decimal a, decimal b)
+        {
+            double span = decimal.ToDouble(b - a);
+            decimal span2 = decimal.Parse((rand.NextDouble() * span).ToString("N2"));
+            return a + span2;
+        }
+
+        /// <summary>
+        /// 生成一个随机商品
+        /// </summary>
+        /// <returns></returns>
         private static Commodity RandCommodity()
         {
-            string price = (rand.NextDouble() * 100).ToString("N2");
-            return new Commodity(RandString(), decimal.Parse(price));
+            return new Commodity(RandString(), RandDecimal(10, 100));
+        }
+
+        /// <summary>
+        /// 生成一个随机订单详情
+        /// </summary>
+        /// <returns></returns>
+        private static OrderDetail RandDetail()
+        {
+            int count = rand.Next(1, 5);
+            return new OrderDetail(RandString(), RandCommodity(), count);
         }
 
         private static Random rand = new Random();

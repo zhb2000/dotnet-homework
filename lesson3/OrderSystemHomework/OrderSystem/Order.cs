@@ -14,20 +14,10 @@ namespace OrderSystem
     {
         public Order() { }
 
-        public Order(Client client, OrderDetail detail, Commodity commodity, int count)
+        public Order(Client client, List<OrderDetail> details)
         {
-            if (client == null || detail == null || commodity == null)
-            {
-                throw new NullArgumentException();
-            }
-            if(count<=0)
-            {
-                throw new InvalidCountException(count);
-            }
             Client = client;
-            Detail = detail;
-            Commodity = commodity;
-            CommodityCount = count;
+            Details = details;
         }
 
         private int id = -1;
@@ -46,33 +36,39 @@ namespace OrderSystem
         public Client Client { get; set; }
 
         /// <summary>
-        /// 订单详情
+        /// 订单详情列表
         /// </summary>
-        public OrderDetail Detail { get; set; }
-
-        /// <summary>
-        /// 货物
-        /// </summary>
-        public Commodity Commodity { get; set; }
-
-        /// <summary>
-        /// 货物的数量
-        /// </summary>
-        public int CommodityCount { get; set; }
+        public List<OrderDetail> Details { get; set; }
 
         /// <summary>
         /// 总价
         /// </summary>
-        public decimal PriceSum { get => Commodity.Price * CommodityCount; }
+        public decimal PriceSum 
+        {
+            get
+            {
+                decimal sum = 0;
+                Details.ForEach(detail => sum += detail.Commodity.Price * detail.Count);
+                return sum;
+            }
+        }
+
+        /// <summary>
+        /// 该订单是否包含某件商品
+        /// </summary>
+        public bool ContainsCommodity(Commodity commodity) => 
+            Details.Find(detail => detail.Commodity.Equals(commodity)) != null;
 
         public override string ToString()
         {
-            return $"id: {Id}\n\n" +
-                   $"client:\n{Client}\n\n" +
-                   $"detail:\n{Detail}\n\n" +
-                   $"commodity:\n{Commodity}\n\n" +
-                   $"commodity count: {CommodityCount}\n\n" +
-                   $"price sum: {PriceSum}";
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"id: {Id}\n\n")
+              .Append($"client:\n{Client}\n\n")
+              .Append($"price sum: {PriceSum}\n\n")
+              .Append("details:\n");
+            Details.ForEach(detail => sb.Append($"{detail}\n"));
+            sb.Append("\n");
+            return sb.ToString();
         }
 
         // override object.Equals
@@ -84,25 +80,12 @@ namespace OrderSystem
             }
             Order other = (Order)obj;
             return Client.Equals(other.Client)
-                && Detail.Equals(other.Detail)
-                && Commodity.Equals(other.Commodity)
-                && CommodityCount == other.CommodityCount;
+                && Details.Equals(other.Details);
         }
 
         // override object.GetHashCode
         public override int GetHashCode() => Client.GetHashCode()
-                                           ^ Detail.GetHashCode()
-                                           ^ Commodity.GetHashCode()
-                                           ^ CommodityCount;
-    }
-
-    /// <summary>
-    /// 数量不合法
-    /// </summary>
-    public class InvalidCountException : ApplicationException
-    {
-        public InvalidCountException(int count)
-            : base($"Count {count} is invalid.") { }
+                                           ^ Details.GetHashCode();
     }
 
     /// <summary>

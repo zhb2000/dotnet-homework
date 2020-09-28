@@ -14,7 +14,20 @@ namespace OrderSystem
     {
         public OrderDetail() { }
 
-        public OrderDetail(string address) => Address = address;
+        public OrderDetail(string address, Commodity commodity, int count)
+        {
+            if (address == null || commodity == null)
+            {
+                throw new NullArgumentException();
+            }
+            if (count <= 0)
+            {
+                throw new InvalidCountException(count);
+            }
+            Address = address;
+            Commodity = commodity;
+            Count = count;
+        }
 
         private string address;
         /// <summary>
@@ -26,7 +39,22 @@ namespace OrderSystem
             set => address = value.Trim();
         }
 
-        public override string ToString() => $"address: {Address}";
+        /// <summary>
+        /// 商品
+        /// </summary>
+        public Commodity Commodity { get; set; }
+
+        /// <summary>
+        /// 商品数量
+        /// </summary>
+        public int Count { get; set; }
+
+        public override string ToString()
+        {
+            return $"address: {Address}\n" +
+                   $"commodity: {Commodity}\n" +
+                   $"count: {Count}";
+        }
 
         // override object.Equals
         public override bool Equals(object obj)
@@ -36,10 +64,23 @@ namespace OrderSystem
                 return false;
             }
             OrderDetail other = (OrderDetail)obj;
-            return Address == other.Address;
+            return Address == other.Address
+                   && Commodity == other.Commodity
+                   && Count == other.Count;
         }
 
         // override object.GetHashCode
-        public override int GetHashCode() => Address.GetHashCode();
+        public override int GetHashCode() => Address.GetHashCode()
+                                             ^ Commodity.GetHashCode()
+                                             ^ Count;
+    }
+
+    /// <summary>
+    /// 数量不合法
+    /// </summary>
+    public class InvalidCountException : ApplicationException
+    {
+        public InvalidCountException(int count)
+            : base($"Count {count} is invalid.") { }
     }
 }
