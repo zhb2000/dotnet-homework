@@ -15,6 +15,11 @@ namespace OrderSystem
     public class OrderService : IEnumerable<Order>
     {
         /// <summary>
+        /// 订单列表
+        /// </summary>
+        public List<Order> Orders { get; private set; } = new List<Order>();
+
+        /// <summary>
         /// 添加订单，返回订单的 id
         /// </summary>
         /// <param name="order">订单</param>
@@ -31,19 +36,19 @@ namespace OrderSystem
             }
             order.Id = idCounter;
             idCounter++;
-            orders.Add(order);
+            Orders.Add(order);
             return order.Id;
         }
 
         /// <summary>
         /// 查询订单是否存在
         /// </summary>
-        public bool Exists(Order order) => orders.Contains(order);
+        public bool Exists(Order order) => Orders.Contains(order);
 
         /// <summary>
         /// 用 id 查询订单是否存在
         /// </summary>
-        public bool Exists(int id) => orders.Find(order => order.Id == id) != null;
+        public bool Exists(int id) => Orders.Find(order => order.Id == id) != null;
 
         /// <summary>
         /// 删除订单
@@ -51,7 +56,7 @@ namespace OrderSystem
         /// <param name="id">订单 id</param>
         public void RemoveOrder(int id)
         {
-            int rmCnt = orders.RemoveAll(order => order.Id == id);
+            int rmCnt = Orders.RemoveAll(order => order.Id == id);
             if (rmCnt == 0)
             {
                 throw new OrderNotExistException();
@@ -68,7 +73,7 @@ namespace OrderSystem
             {
                 throw new OrderNotExistException();
             }
-            orders.Remove(order);
+            Orders.Remove(order);
         }
 
         /// <summary>
@@ -78,18 +83,26 @@ namespace OrderSystem
         /// <returns>订单，若订单不存在则为 null</returns>
         public Order Get(int id)
         {
-            return orders.Find(order => order.Id == id);
+            return Orders.Find(order => order.Id == id);
         }
 
         public IEnumerator<Order> GetEnumerator()
         {
-            foreach (Order order in orders)
+            foreach (Order order in Orders)
             {
                 yield return order;
             }
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public void ForEach(Action<Order> action)
+        {
+            foreach (Order order in Orders)
+            {
+                action?.Invoke(order);
+            }
+        }
 
         /// <summary>
         /// 序列化为 XML
@@ -100,14 +113,10 @@ namespace OrderSystem
             XmlSerializer serializer = new XmlSerializer(typeof(List<Order>));
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
-                serializer.Serialize(fs, orders);
+                serializer.Serialize(fs, Orders);
             }
         }
 
-        /// <summary>
-        /// 订单列表
-        /// </summary>
-        private List<Order> orders = new List<Order>();
         /// <summary>
         /// 订单编号计数器
         /// </summary>
@@ -125,10 +134,10 @@ namespace OrderSystem
             {
                 OrderService service = new OrderService
                 {
-                    orders = (List<Order>)serializer.Deserialize(fs)
+                    Orders = (List<Order>)serializer.Deserialize(fs)
                 };
                 int maxId = -1;
-                service.orders.ForEach(order => maxId = Math.Max(maxId, order.Id));
+                service.Orders.ForEach(order => maxId = Math.Max(maxId, order.Id));
                 service.idCounter = maxId + 1;
                 return service;
             }

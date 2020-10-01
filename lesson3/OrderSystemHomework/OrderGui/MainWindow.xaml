@@ -1,0 +1,107 @@
+﻿<Window x:Class="OrderGui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OrderGui"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="500" Width="900">
+
+    <Window.Resources>
+        <Style x:Key="ToolButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Grid.Row="1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        
+        <!-- Left Area -->
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Left Toolbar -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <Button x:Name="addOrderButton" Content="Add Order"
+                    Style="{StaticResource ToolButtonStyle}"
+                    Click="addOrderButton_Click"/>
+                <Button x:Name="removeOrderButton" Content="Remove Order"
+                    Style="{StaticResource ToolButtonStyle}"
+                    Click="removeOrderButton_Click"/>
+                <Button x:Name="exportButton" Content="Export"
+                    Style="{StaticResource ToolButtonStyle}"
+                    Click="exportButton_Click"/>
+                <Button x:Name="importButton" Content="Import"
+                    Style="{StaticResource ToolButtonStyle}"
+                    Click="importButton_Click"/>
+                <Button x:Name="refreshButton" Content="Refresh"
+                    Style="{StaticResource ToolButtonStyle}"
+                    Click="refreshButton_Click"/>
+                <Button x:Name="randButton" Content="Random"
+                    Style="{StaticResource ToolButtonStyle}"
+                        Click="randButton_Click"/>
+            </StackPanel>
+            
+            <!-- Order List -->
+            <DataGrid x:Name="orderDataGrid" 
+                      Grid.Row="1"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      ItemsSource="{Binding Orders}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding Id}"
+                                        IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Client Name" Binding="{Binding ClientName}"/>
+                    <DataGridTextColumn Header="Client Phone" Binding="{Binding ClientPhone}"/>
+                    <DataGridTextColumn Header="Price Sum" Binding="{Binding PriceSum}"
+                                        IsReadOnly="True"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            
+        </Grid>
+
+        <!-- Right Area-->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Right Toolbar -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <Button x:Name="addDetailButton" Content="Add Detail"
+                    Style="{StaticResource ToolButtonStyle}"
+                    Click="addDetailButton_Click"/>
+                <Button x:Name="removeDetailButton" Content="Remove Detail"
+                    Style="{StaticResource ToolButtonStyle}"
+                    Click="removeDetailButton_Click"/>
+            </StackPanel>
+
+            <!-- Detail List -->
+            <DataGrid x:Name="detailDataGrid"
+                      Grid.Row="1"
+                      AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      ItemsSource="{Binding ElementName=orderDataGrid, Path=SelectedItem.Details}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Address" Binding="{Binding Address}"/>
+                    <DataGridTextColumn Header="Commodity Name" Binding="{Binding CommodityName}"/>
+                    <DataGridTextColumn Header="Commodity Price" Binding="{Binding CommodityPrice}"/>
+                    <DataGridTextColumn Header="Count" Binding="{Binding Count}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            
+        </Grid>
+        
+    </Grid>
+</Window>

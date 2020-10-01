@@ -12,7 +12,11 @@ namespace OrderSystem
     [Serializable]
     public class Client
     {
-        public Client() { }
+        public Client()
+        {
+            Name = "";
+            Phone = "";
+        }
 
         public Client(string name, string phone)
         {

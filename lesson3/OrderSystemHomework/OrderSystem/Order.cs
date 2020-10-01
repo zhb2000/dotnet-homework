@@ -12,7 +12,11 @@ namespace OrderSystem
     [Serializable]
     public class Order
     {
-        public Order() { }
+        public Order()
+        {
+            Client = new Client();
+            Details = new List<OrderDetail>();
+        }
 
         public Order(Client client, List<OrderDetail> details)
         {
@@ -43,7 +47,7 @@ namespace OrderSystem
         /// <summary>
         /// 总价
         /// </summary>
-        public decimal PriceSum 
+        public decimal PriceSum
         {
             get
             {
@@ -56,7 +60,7 @@ namespace OrderSystem
         /// <summary>
         /// 该订单是否包含某件商品
         /// </summary>
-        public bool ContainsCommodity(Commodity commodity) => 
+        public bool ContainsCommodity(Commodity commodity) =>
             Details.Find(detail => detail.Commodity.Equals(commodity)) != null;
 
         public override string ToString()

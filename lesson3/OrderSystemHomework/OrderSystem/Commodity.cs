@@ -12,7 +12,11 @@ namespace OrderSystem
     [Serializable]
     public class Commodity
     {
-        public Commodity() { }
+        public Commodity()
+        {
+            Name = "";
+            Price = 0;
+        }
 
         public Commodity(string name, decimal price)
         {
@@ -32,7 +36,7 @@ namespace OrderSystem
         public decimal Price
         {
             get => price;
-            set => price = value >= 0
+            set => price = (value >= 0)
                 ? value
                 : throw new InvalidPriceException(value);
         }

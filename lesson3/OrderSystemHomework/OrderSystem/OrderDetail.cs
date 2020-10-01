@@ -12,7 +12,12 @@ namespace OrderSystem
     [Serializable]
     public class OrderDetail
     {
-        public OrderDetail() { }
+        public OrderDetail()
+        {
+            Address = "";
+            Commodity = new Commodity();
+            Count = 1;
+        }
 
         public OrderDetail(string address, Commodity commodity, int count)
         {
@@ -47,7 +52,13 @@ namespace OrderSystem
         /// <summary>
         /// 商品数量
         /// </summary>
-        public int Count { get; set; }
+        public int Count
+        {
+            get => count;
+            set => count = (value > 0)
+                            ? value
+                            : throw new InvalidCountException(value);
+        }
 
         public override string ToString()
         {
@@ -73,6 +84,8 @@ namespace OrderSystem
         public override int GetHashCode() => Address.GetHashCode()
                                              ^ Commodity.GetHashCode()
                                              ^ Count;
+
+        private int count;
     }
 
     /// <summary>
