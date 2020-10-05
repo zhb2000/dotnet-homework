@@ -22,43 +22,52 @@ namespace OrderGui
     /// </summary>
     public partial class AddOrderWindow : Window
     {
+        /// <summary>
+        /// 添加订单窗口的 View Model
+        /// </summary>
+        private readonly OrderViewModel vm;
+
         public AddOrderWindow()
         {
             InitializeComponent();
-            DataContext = new OrderViewModel();
+            vm = new OrderViewModel();
+            DataContext = vm;
         }
 
+        /// <summary>
+        /// 通过 OrderResult 属性获取添加订单的结果
+        /// </summary>
         public OrderViewModel OrderResult { get; private set; }
 
-        private void confirmButton_Click(object sender, RoutedEventArgs e)
+        private void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
-            OrderResult = (OrderViewModel)DataContext;
+            OrderResult = vm;
             Close();
         }
 
-        private void cancelButton_Click(object sender, RoutedEventArgs e)
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
             Close();
         }
 
-        private void addDetailButton_Click(object sender, RoutedEventArgs e)
+        private void AddDetailButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new AddDetailWindow((OrderViewModel)DataContext);
+            var dialog = new AddDetailWindow(vm);
             bool result = dialog.ShowDialog().GetValueOrDefault(false);
             if (result)
             {
-                ((OrderViewModel)DataContext).AddDetail(dialog.DetailResult);
+                vm.AddDetail(dialog.DetailResult);
             }
         }
 
-        private void deleteDetailButton_Click(object sender, RoutedEventArgs e)
+        private void DeleteDetailButton_Click(object sender, RoutedEventArgs e)
         {
             var detail = (OrderDetailViewModel)detailDataGrid.SelectedItem;
-            if(detail!=null)
+            if (detail != null)
             {
-                ((OrderViewModel)DataContext).RemoveDetail(detail);
+                vm.RemoveDetail(detail);
             }
         }
     }

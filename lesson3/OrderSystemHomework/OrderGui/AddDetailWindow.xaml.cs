@@ -21,28 +21,35 @@ namespace OrderGui
     /// </summary>
     public partial class AddDetailWindow : Window
     {
+        /// <summary>
+        /// 添加订单详情窗口的 View Model
+        /// </summary>
+        private readonly OrderDetailViewModel vm;
+
+        /// <param name="orderVM">所属的订单的 View Model</param>
         public AddDetailWindow(OrderViewModel orderVM)
         {
             InitializeComponent();
             this.orderVM = orderVM;
-            DataContext = new OrderDetailViewModel(orderVM);
+            vm = new OrderDetailViewModel(orderVM);
+            DataContext = vm;
         }
 
         public OrderDetailViewModel DetailResult;
 
-        private void confirmButton_Click(object sender, RoutedEventArgs e)
+        private void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
-            DetailResult = (OrderDetailViewModel)DataContext;
+            DetailResult = vm;
             Close();
         }
 
-        private void cancelButton_Click(object sender, RoutedEventArgs e)
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
             Close();
         }
 
-        private OrderViewModel orderVM;
+        private readonly OrderViewModel orderVM;
     }
 }

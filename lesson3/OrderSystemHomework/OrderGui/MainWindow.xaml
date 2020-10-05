@@ -32,22 +32,22 @@
             <StackPanel Grid.Row="0" Orientation="Horizontal">
                 <Button x:Name="addOrderButton" Content="Add Order"
                     Style="{StaticResource ToolButtonStyle}"
-                    Click="addOrderButton_Click"/>
+                    Click="AddOrderButton_Click"/>
                 <Button x:Name="removeOrderButton" Content="Remove Order"
                     Style="{StaticResource ToolButtonStyle}"
-                    Click="removeOrderButton_Click"/>
+                    Click="RemoveOrderButton_Click"/>
                 <Button x:Name="exportButton" Content="Export"
                     Style="{StaticResource ToolButtonStyle}"
-                    Click="exportButton_Click"/>
+                    Click="ExportButton_Click"/>
                 <Button x:Name="importButton" Content="Import"
                     Style="{StaticResource ToolButtonStyle}"
-                    Click="importButton_Click"/>
+                    Click="ImportButton_Click"/>
                 <Button x:Name="refreshButton" Content="Refresh"
                     Style="{StaticResource ToolButtonStyle}"
-                    Click="refreshButton_Click"/>
+                    Click="RefreshButton_Click"/>
                 <Button x:Name="randButton" Content="Random"
                     Style="{StaticResource ToolButtonStyle}"
-                        Click="randButton_Click"/>
+                        Click="RandButton_Click"/>
             </StackPanel>
             
             <!-- Order List -->
@@ -80,10 +80,10 @@
             <StackPanel Grid.Row="0" Orientation="Horizontal">
                 <Button x:Name="addDetailButton" Content="Add Detail"
                     Style="{StaticResource ToolButtonStyle}"
-                    Click="addDetailButton_Click"/>
+                    Click="AddDetailButton_Click"/>
                 <Button x:Name="removeDetailButton" Content="Remove Detail"
                     Style="{StaticResource ToolButtonStyle}"
-                    Click="removeDetailButton_Click"/>
+                    Click="RemoveDetailButton_Click"/>
             </StackPanel>
 
             <!-- Detail List -->

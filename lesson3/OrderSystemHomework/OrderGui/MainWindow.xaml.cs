@@ -24,11 +24,16 @@ namespace OrderGui
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// 主窗口的 View Model
+        /// </summary>
+        private MainWinViewModel vm;
+
         public MainWindow()
         {
             InitializeComponent();
-            var bindingSource = new MainWinViewModel(new OrderService());
-            DataContext = bindingSource;
+            vm = new MainWinViewModel(new OrderService());
+            DataContext = vm;
         }
 
         /// <summary>
@@ -45,31 +50,31 @@ namespace OrderGui
             return service;
         }
 
-        private void randButton_Click(object sender, RoutedEventArgs e)
+        private void RandButton_Click(object sender, RoutedEventArgs e)
         {
-            ((MainWinViewModel)DataContext).SetDataSource(ServiceWithRand());
+            vm.SetDataSource(ServiceWithRand());
         }
 
-        private void addOrderButton_Click(object sender, RoutedEventArgs e)
+        private void AddOrderButton_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new AddOrderWindow();
             bool result = dialog.ShowDialog().GetValueOrDefault(false);
             if (result)
             {
-                ((MainWinViewModel)DataContext).AddOrder(dialog.OrderResult);
+                vm.AddOrder(dialog.OrderResult);
             }
         }
 
-        private void removeOrderButton_Click(object sender, RoutedEventArgs e)
+        private void RemoveOrderButton_Click(object sender, RoutedEventArgs e)
         {
             var order = (OrderViewModel)orderDataGrid.SelectedItem;
             if (order != null)
             {
-                ((MainWinViewModel)DataContext).RemoveOrder(order);
+                vm.RemoveOrder(order);
             }
         }
 
-        private void exportButton_Click(object sender, RoutedEventArgs e)
+        private void ExportButton_Click(object sender, RoutedEventArgs e)
         {
             using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
             {
@@ -79,7 +84,7 @@ namespace OrderGui
                     string folderPath = dialog.SelectedPath;
                     try
                     {
-                        ((MainWinViewModel)DataContext).Export(folderPath);
+                        vm.Export(folderPath);
                     }
                     catch (Exception ex)
                     {
@@ -91,7 +96,7 @@ namespace OrderGui
             }
         }
 
-        private void importButton_Click(object sender, RoutedEventArgs e)
+        private void ImportButton_Click(object sender, RoutedEventArgs e)
         {
             using (var dialog = new System.Windows.Forms.OpenFileDialog())
             {
@@ -103,7 +108,7 @@ namespace OrderGui
                     string filepath = dialog.FileName;
                     try
                     {
-                        ((MainWinViewModel)DataContext).Import(filepath);
+                        vm.Import(filepath);
                     }
                     catch (Exception ex)
                     {
@@ -113,12 +118,12 @@ namespace OrderGui
             }
         }
 
-        private void refreshButton_Click(object sender, RoutedEventArgs e)
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            ((MainWinViewModel)DataContext).Refresh();
+            vm.Refresh();
         }
 
-        private void addDetailButton_Click(object sender, RoutedEventArgs e)
+        private void AddDetailButton_Click(object sender, RoutedEventArgs e)
         {
             var order = (OrderViewModel)orderDataGrid.SelectedItem;
             if (order != null)
@@ -132,7 +137,7 @@ namespace OrderGui
             }
         }
 
-        private void removeDetailButton_Click(object sender, RoutedEventArgs e)
+        private void RemoveDetailButton_Click(object sender, RoutedEventArgs e)
         {
             var detail = (OrderDetailViewModel)detailDataGrid.SelectedItem;
             if (detail != null)
@@ -142,6 +147,9 @@ namespace OrderGui
             }
         }
 
+        /// <summary>
+        /// 主窗口 View Model
+        /// </summary>
         public class MainWinViewModel
         {
             public MainWinViewModel(OrderService service)
@@ -182,6 +190,9 @@ namespace OrderGui
             private OrderService service;
         }
 
+        /// <summary>
+        /// 订单类的 ViewModel
+        /// </summary>
         public class OrderViewModel : INotifyPropertyChanged
         {
             public OrderViewModel(Order order)
@@ -262,6 +273,9 @@ namespace OrderGui
             public Order OrderEntity { get; }
         }
 
+        /// <summary>
+        /// 订单详情类的 ViewModel
+        /// </summary>
         public class OrderDetailViewModel
         {
             public OrderDetailViewModel(OrderDetail detail, OrderViewModel fatherVM)

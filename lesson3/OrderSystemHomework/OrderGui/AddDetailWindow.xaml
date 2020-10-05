@@ -87,11 +87,11 @@
                 <Button x:Name="confirmButton" 
                         Content="Confirm" 
                         Style="{StaticResource buttonStyle}"
-                        Click="confirmButton_Click"/>
+                        Click="ConfirmButton_Click"/>
                 <Button x:Name="cancelButton"
                         Content="Cancel" 
                         Style="{StaticResource buttonStyle}"
-                        Click="cancelButton_Click"/>
+                        Click="CancelButton_Click"/>
             </StackPanel>
         </Grid>
 
