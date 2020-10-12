@@ -25,6 +25,7 @@ namespace CrawlerHomework
                 (url, html) => Console.WriteLine($"Craw {url} succeeded.");
             crawler.CrawlTaskEnded += () => Console.WriteLine("Craw task ended.");
             crawler.BfsCraw();
+            Console.ReadKey();
         }
     }
 
@@ -61,12 +62,18 @@ namespace CrawlerHomework
 
         public void Stop() => stopFlag = true;
 
+        /// <summary>
+        /// DFS 方式爬取
+        /// </summary>
         public void DfsCraw()
         {
             Dfs(firstUrl);
             CrawlTaskEnded?.Invoke();
         }
 
+        /// <summary>
+        /// DFS 方式爬取
+        /// </summary>
         public void BfsCraw()
         {
             var urlQueue = new Queue<string>();
@@ -101,6 +108,14 @@ namespace CrawlerHomework
             CrawlTaskEnded?.Invoke();
         }
 
+        /// <summary>
+        /// 使用多线程爬取
+        /// </summary>
+        public async Task MultiThreadCraw()
+        {
+            await Task.Run(() => MultiThMethod(firstUrl));
+        }
+
         private void Dfs(string url)
         {
             if (stopFlag || count >= maxCount)
@@ -133,6 +148,63 @@ namespace CrawlerHomework
             }
         }
 
+        private void MultiThMethod(string url)
+        {
+            if (stopFlag || count >= maxCount)
+            {
+                return;
+            }
+
+            CrawlPageStarted?.Invoke(url); //开始爬取
+            string html;
+            try
+            {
+                html = GetHtml(url);
+            }
+            catch (Exception e)
+            {
+                CrawlPageFailed?.Invoke(url, e.Message); //爬取失败
+                return;
+            }
+            mutex.WaitOne();
+            if (!hasCrawedUrl.Contains(url))
+            {
+                count++;
+                hasCrawedUrl.Add(url);
+                if(count >= maxCount)
+                {
+                    mutex.ReleaseMutex();
+                    return;
+                }
+                mutex.ReleaseMutex();
+                string filepath = folderpath + "/" + count + ".html";
+                try
+                {
+                    File.WriteAllText(filepath, html, Encoding.UTF8);
+                }
+                catch (Exception e)
+                {
+                    CrawlPageFailed?.Invoke(url, e.Message); //爬取失败
+                    return;
+                }
+                CrawlPageSucceeded?.Invoke(url, html); //爬取成功
+                foreach (var nxtUrl in UrlsInHtml(html, url))
+                {
+                    mutex.WaitOne();
+                    bool canCrawl = !hasCrawedUrl.Contains(nxtUrl);
+                    mutex.ReleaseMutex();
+                    if (canCrawl)
+                    {
+                        Task.Run(() => MultiThMethod(nxtUrl));
+                    }
+                }
+            }
+            else
+            {
+                mutex.ReleaseMutex();
+            }
+        }
+
         /// <summary>
         /// 第一个 URL
         /// </summary>
@@ -141,6 +213,7 @@ namespace CrawlerHomework
         /// 已爬取过的 URL
         /// </summary>
         private readonly HashSet<string> hasCrawedUrl = new HashSet<string>();
+        private readonly Mutex mutex = new Mutex();
         /// <summary>
         /// 已爬取网页个数
         /// </summary>
@@ -167,6 +240,13 @@ namespace CrawlerHomework
             var client = new WebClient { Encoding = Encoding.UTF8 };
             string html = client.DownloadString(url);
             File.WriteAllText(filepath, html, Encoding.UTF8);
+            return html;
+        }
+
+        private static string GetHtml(string url)
+        {
+            var client = new WebClient { Encoding = Encoding.UTF8 };
+            string html = client.DownloadString(url);
             return html;
         }
 
