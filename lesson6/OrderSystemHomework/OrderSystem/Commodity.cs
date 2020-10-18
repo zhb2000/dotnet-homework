@@ -27,7 +27,7 @@ namespace OrderSystem
         /// <summary>
         /// 商品名称
         /// </summary>
-        public string Name { get; set; } = "";
+        public string Name { get; set; } /*= "";*/
 
         private decimal price = 0;
         /// <summary>
@@ -43,7 +43,7 @@ namespace OrderSystem
 
         [ForeignKey("OrderDetailId")]
         public int OrderDetailId { get; set; }
-        public OrderDetail OrderDetail { get; set; }
+        //public OrderDetail OrderDetail { get; set; }
 
         public override string ToString()
             => $"CommodityId: {CommodityId}, name: {Name}, price: {Price}";

@@ -15,8 +15,8 @@ namespace OrderSystem
     {
         public Order()
         {
-            Client = new Client();
-            OrderDetails = new List<OrderDetail>();
+            //Client = new Client();
+            //OrderDetails = new List<OrderDetail>();
         }
 
         public Order(Client client, List<OrderDetail> details)
@@ -45,18 +45,26 @@ namespace OrderSystem
         /// <summary>
         /// 订单详情列表
         /// </summary>
-        public List<OrderDetail> OrderDetails { get; set; }
+        public virtual List<OrderDetail> OrderDetails { get; set; }
 
         /// <summary>
         /// 总价
         /// </summary>
+        [NotMapped]
         public decimal PriceSum
         {
             get
             {
                 decimal sum = 0;
-                OrderDetails.ForEach(
-                    detail => sum += detail.Commodity.Price * detail.Count);
+                if (OrderDetails == null)
+                    return 0;
+                foreach (var detail in OrderDetails)
+                {
+                    if (detail != null && detail.Commodity != null)
+                        sum += detail.Commodity.Price * detail.Count;
+                }
+                /*OrderDetails.ForEach(
+                    detail => sum += detail.Commodity.Price * detail.Count);*/
                 return sum;
             }
         }

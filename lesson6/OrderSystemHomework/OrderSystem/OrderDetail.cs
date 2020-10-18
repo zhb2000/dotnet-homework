@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -33,7 +34,7 @@ namespace OrderSystem
         [Key]
         public int OrderDetailId { get; set; }
 
-        private string address = "";
+        private string address;/* = "";*/
         /// <summary>
         /// 地址
         /// </summary>
@@ -46,7 +47,7 @@ namespace OrderSystem
         /// <summary>
         /// 商品
         /// </summary>
-        public Commodity Commodity { get; set; } = new Commodity();
+        public Commodity Commodity { get; set; } /*= new Commodity();*/
 
         private int count = 1;
         /// <summary>
@@ -62,7 +63,8 @@ namespace OrderSystem
 
         [ForeignKey("OrderId")]
         public int OrderId { get; set; }
-        public Order Order { get; set; }
+        
+        //public Order Order { get; set; }
 
         public override string ToString()
         {

@@ -41,27 +41,6 @@ namespace OrderSystem
                 Console.WriteLine("---------------------------------");
             }
         }
-
-        static void Main1()
-        {
-            var service = new MemOrderService();
-            for (int i = 1; i <= 10; i++)//填充 10 个随机订单
-            {
-                service.AddOrder(RandomOrder.RandOrder());
-            }
-            service.Export("service.xml");//导出到 xml
-            service = MemOrderService.Import("service.xml");//从 xml 导入
-            //用 LINQ 语法查询
-            var result = from order in service
-                         where order.PriceSum > 10
-                         orderby order.OrderId
-                         select order;
-            foreach (var order in result)
-            {
-                Console.WriteLine(order);
-                Console.WriteLine("---------------------------------");
-            }
-        }
     }
 
     public class RandomOrder
